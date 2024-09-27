@@ -41,6 +41,7 @@ Route::middleware('auth')->group(function () {
 
 Route::middleware('auth')->group(function () {
     Route::get('/Documentos', [DocumentController::class, 'index'])->name('documents.index');
+    Route::post('/Documentos/recibir', [DocumentController::class, 'store'])->name('documents.store');
 
 });
 
