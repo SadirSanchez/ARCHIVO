@@ -4,7 +4,7 @@
         title="Recepcionar documentos"
         key-modal="modalReceive"
         accept-title="Guardar"
-        @accept="action === 'edit' ? Update() : submit()"
+        @accept="saveDocuement"
         :is-loading="isLoading"
     >
         <template #body>
@@ -67,11 +67,11 @@
 
                     <div class="col-lg-6">
                         <div class="form-group mb-3">
-                            <label for="">Tiempo de retención (*)</label>
+                            <label for="">Años de retención (*)</label>
                             <input
                                 v-model="FormUser.retentionTime"
                                 class="form-control form-control-lg"
-                                type="text"
+                                type="number"
                             />
                         </div>
                     </div>
@@ -121,6 +121,7 @@
 
 <script setup>
 import SuperModal from "@/Components/Modals/SuperModal.vue";
+import axios from "axios";
 import { ref, reactive, defineExpose } from "vue";
 
 const modalReceive = ref(null);
@@ -142,6 +143,18 @@ function openModal() {
 function CloseModal() {
     modalReceive.value.close();
 }
+
+const saveDocuement = async () => {
+    await axios.post(route("documents.store"), {
+        originDependency: FormUser.originDependency,
+        typeDocument: FormUser.typeDocument,
+        name: FormUser.name,
+        retentionTime: FormUser.retentionTime,
+        dateElaboration: FormUser.dateElaboration,
+        totalInventory: FormUser.totalInventory,
+        physicalLocation: FormUser.physicalLocation,
+    });
+};
 
 defineExpose({ openModal, CloseModal });
 </script>
