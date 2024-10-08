@@ -113,6 +113,17 @@
                             </textarea>
                         </div>
                     </div>
+                    <div class="col-lg-6">
+                        <div class="form-group mb-3">
+                            <label for="pdfFile">Subir archivo PDF</label>
+                            <input
+                                type="file"
+                                class="form-control form-control-lg"
+                                @change="handleFileUpload"
+                                accept=".pdf"
+                            />
+                        </div>
+                    </div>
                 </div>
             </form>
         </template>
@@ -134,7 +145,12 @@ const FormUser = reactive({
     dateElaboration: null,
     totalInventory: null,
     physicalLocation: null,
+    pdfFile: null,
 });
+
+function handleFileUpload(event) {
+    FormUser.pdfFile = event.target.files[0];
+}
 
 function openModal() {
     modalReceive.value.open();
@@ -145,16 +161,27 @@ function CloseModal() {
 }
 
 const saveDocuement = async () => {
-    await axios.post(route("documents.store"), {
-        originDependency: FormUser.originDependency,
-        typeDocument: FormUser.typeDocument,
-        name: FormUser.name,
-        retentionTime: FormUser.retentionTime,
-        dateElaboration: FormUser.dateElaboration,
-        totalInventory: FormUser.totalInventory,
-        physicalLocation: FormUser.physicalLocation,
+    const formData = new FormData();
+    formData.append("originDependency", FormUser.originDependency);
+    formData.append("typeDocument", FormUser.typeDocument);
+    formData.append("name", FormUser.name);
+    formData.append("retentionTime", FormUser.retentionTime);
+    formData.append("dateElaboration", FormUser.dateElaboration);
+    formData.append("totalInventory", FormUser.totalInventory);
+    formData.append("physicalLocation", FormUser.physicalLocation);
+    
+    // Agregamos el archivo PDF
+    if (FormUser.pdfFile) {
+        formData.append("pdfFile", FormUser.pdfFile);
+    }
+
+    await axios.post(route("documents.store"), formData, {
+        headers: {
+            "Content-Type": "multipart/form-data",
+        },
     });
 };
+
 
 defineExpose({ openModal, CloseModal });
 </script>

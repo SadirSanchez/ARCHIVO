@@ -38,6 +38,7 @@ class DocumentController extends Controller
             'dateElaboration' => 'required|date',
             'totalInventory' => 'required|string',
             'physicalLocation' => 'required|string|max:1000',
+            'pdfFile' => 'nullable|file|mimes:pdf|max:2048',
         ]);
 
         // Comprobar si la validación falla
@@ -49,7 +50,13 @@ class DocumentController extends Controller
         }
 
         // Crear el documento
-        $document = Document::create($request->all());
+        $document = Document::create($request->except('pdfFile'));
+
+        if ($request->hasFile('pdfFile')) {
+            $pdfPath = $request->file('pdfFile')->store('documents', 'public');
+            $document->pdf_file_path = $pdfPath; // Guardamos la ruta en la base de datos
+            $document->save();
+        }
 
         // Respuesta en formato JSON
         return response()->json(['message' => 'Documento creado correctamente'], 201);
