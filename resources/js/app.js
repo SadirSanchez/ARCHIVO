@@ -2,6 +2,7 @@ import './bootstrap';
 import '../css/app.css';
 import 'bootstrap';
 import SuperModal from './Components/Modals/SuperModal.vue';
+import Alerts from './Components/Modals/Alerts.vue';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 import { createApp, h } from 'vue';
@@ -20,6 +21,7 @@ createInertiaApp({
             .use(ZiggyVue)
             .mount(el)
             .component("SuperModal", SuperModal)
+            .component("Alerts", Alerts)
     },
     progress: {
         color: '#4B5563',

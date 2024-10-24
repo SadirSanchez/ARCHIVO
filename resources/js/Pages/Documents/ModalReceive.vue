@@ -128,14 +128,31 @@
             </form>
         </template>
     </super-modal>
+    <Alerts
+        v-if="aalert.open"
+        :Title="aalert.Title"
+        :Body="aalert.Body"
+        :Type="aalert.Type"
+        :Redirect="aalert.Redirect"
+        :RedirectParams="aalert.RedirectParams"
+    />
 </template>
 
 <script setup>
+import Alerts from "@/Components/Modals/Alerts.vue";
 import SuperModal from "@/Components/Modals/SuperModal.vue";
 import axios from "axios";
 import { ref, reactive, defineExpose } from "vue";
 
 const modalReceive = ref(null);
+
+const aalert = reactive({
+    open: false,
+    Title: null,
+    Type: null,
+    Redirect: null,
+    Body: null,
+});
 
 const FormUser = reactive({
     originDependency: null,
@@ -161,6 +178,7 @@ function CloseModal() {
 }
 
 const saveDocuement = async () => {
+    aalert.open = false;
     const formData = new FormData();
     formData.append("originDependency", FormUser.originDependency);
     formData.append("typeDocument", FormUser.typeDocument);
@@ -170,18 +188,30 @@ const saveDocuement = async () => {
     formData.append("totalInventory", FormUser.totalInventory);
     formData.append("physicalLocation", FormUser.physicalLocation);
     
-    // Agregamos el archivo PDF
     if (FormUser.pdfFile) {
         formData.append("pdfFile", FormUser.pdfFile);
     }
 
-    await axios.post(route("documents.store"), formData, {
-        headers: {
-            "Content-Type": "multipart/form-data",
-        },
-    });
+    try {
+        const res = await axios.post(route("documents.store"), formData, {
+            headers: {
+                "Content-Type": "multipart/form-data",
+            },
+        });
+
+        console.log("Respuesta de éxito:", res);
+
+        aalert.open = true;
+        aalert.Title = "¡Bien hecho!";
+        aalert.Body = "Se registró el documento correctamente.";
+        aalert.Type = "success";
+        aalert.Redirect = "documents.index";
+    } catch (error) {
+        console.log("Error al guardar documento:", error);
+        alert("Hubo un error al guardar el documento");
+    }
 };
 
 
-defineExpose({ openModal, CloseModal });
+defineExpose({ open, openModal, CloseModal });
 </script>
