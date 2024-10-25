@@ -40,9 +40,9 @@ Route::middleware('auth')->group(function () {
 // Documents
 
 Route::middleware('auth')->group(function () {
-    Route::get('/Documentos', [DocumentController::class, 'index'])->name('documents.index');
-    Route::post('/Documentos/recibir', [DocumentController::class, 'store'])->name('documents.store');
-
+    Route::get('/Documents', [DocumentController::class, 'index'])->name('documents.index');
+    Route::post('/Documents/receive', [DocumentController::class, 'store'])->name('documents.store');
+    Route::get('/Documents/consult', [DocumentController::class, 'getDocuments'])->name('documents.getDocuments');
 });
 
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';

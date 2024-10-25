@@ -11,6 +11,7 @@ class Document extends Model
 
     protected $fillable = [
         'name',
+        'documentNumber',
         'typeDocument',
         'dateElaboration',
         'totalInventory',

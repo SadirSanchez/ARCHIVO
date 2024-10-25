@@ -67,6 +67,19 @@
 
                     <div class="col-lg-6">
                         <div class="form-group mb-3">
+                            <label for="">Número de documento (*)</label>
+                            <input
+                                class="form-control form-control-lg"
+                                type="number"
+                                v-model="FormUser.documentNumber"
+                            />
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row g-3">
+                    <div class="col-lg-6">
+                        <div class="form-group mb-3">
                             <label for="">Años de retención (*)</label>
                             <input
                                 v-model="FormUser.retentionTime"
@@ -75,9 +88,6 @@
                             />
                         </div>
                     </div>
-                </div>
-
-                <div class="row g-3">
                     <div class="col-lg-6">
                         <div class="form-group mb-3">
                             <label for="">Fecha de elaboración (*)</label>
@@ -88,7 +98,9 @@
                             />
                         </div>
                     </div>
+                </div>
 
+                <div class="row g-3">
                     <div class="col-lg-6">
                         <div class="form-group mb-3">
                             <label for="">Inventario documental(*)</label>
@@ -99,20 +111,7 @@
                             />
                         </div>
                     </div>
-                </div>
 
-                <div class="row g-3">
-                    <div class="col-lg-6">
-                        <div class="form-group mb-3">
-                            <label for="">Ubicación física(*)</label>
-                            <textarea
-                                v-model="FormUser.physicalLocation"
-                                class="form-control form-control-lg"
-                                type="text"
-                            >
-                            </textarea>
-                        </div>
-                    </div>
                     <div class="col-lg-6">
                         <div class="form-group mb-3">
                             <label for="pdfFile">Subir archivo PDF</label>
@@ -123,6 +122,18 @@
                                 accept=".pdf"
                             />
                         </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-6">
+                    <div class="form-group mb-3">
+                        <label for="">Ubicación física(*)</label>
+                        <textarea
+                            v-model="FormUser.physicalLocation"
+                            class="form-control form-control-lg"
+                            type="text"
+                        >
+                        </textarea>
                     </div>
                 </div>
             </form>
@@ -158,6 +169,7 @@ const FormUser = reactive({
     originDependency: null,
     typeDocument: null,
     name: null,
+    documentNumber: null,
     retentionTime: null,
     dateElaboration: null,
     totalInventory: null,
@@ -170,6 +182,15 @@ function handleFileUpload(event) {
 }
 
 function openModal() {
+    FormUser.originDependency = "",
+    FormUser.typeDocument = "",
+    FormUser.name = "",
+    FormUser.documentNumber = "",
+    FormUser.retentionTime = "",
+    FormUser.dateElaboration = "",
+    FormUser.totalInventory = "",
+    FormUser.physicalLocation = "",
+    FormUser.pdfFile = "",
     modalReceive.value.open();
 }
 
@@ -183,11 +204,12 @@ const saveDocuement = async () => {
     formData.append("originDependency", FormUser.originDependency);
     formData.append("typeDocument", FormUser.typeDocument);
     formData.append("name", FormUser.name);
+    formData.append("documentNumber", FormUser.documentNumber );
     formData.append("retentionTime", FormUser.retentionTime);
     formData.append("dateElaboration", FormUser.dateElaboration);
     formData.append("totalInventory", FormUser.totalInventory);
     formData.append("physicalLocation", FormUser.physicalLocation);
-    
+
     if (FormUser.pdfFile) {
         formData.append("pdfFile", FormUser.pdfFile);
     }
@@ -211,7 +233,6 @@ const saveDocuement = async () => {
         alert("Hubo un error al guardar el documento");
     }
 };
-
 
 defineExpose({ open, openModal, CloseModal });
 </script>

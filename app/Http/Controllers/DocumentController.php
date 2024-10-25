@@ -34,6 +34,7 @@ class DocumentController extends Controller
             'originDependency' => 'required|string',
             'typeDocument' => 'required|string',
             'name' => 'required|string',
+            'documentNumber'=> 'required|string',
             'retentionTime' => 'required|integer',
             'dateElaboration' => 'required|date',
             'totalInventory' => 'required|string',
@@ -65,9 +66,12 @@ class DocumentController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Document $document)
+    public function getDocuments()
     {
-        //
+        $documents = Document::latest()->get();
+
+        return response() ->json($documents, 200);
+
     }
 
     /**
