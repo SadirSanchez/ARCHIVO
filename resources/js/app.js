@@ -4,6 +4,7 @@ import 'bootstrap';
 import SuperModal from './Components/Modals/SuperModal.vue';
 import Alerts from './Components/Modals/Alerts.vue';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import '@fortawesome/fontawesome-free/css/all.min.css';
 
 import { createApp, h } from 'vue';
 import { createInertiaApp } from '@inertiajs/vue3';

@@ -2,49 +2,29 @@
     <Head title="Documents" />
 
     <AuthenticatedLayout>
-        <template #header>
-            <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-                Gestión de Documentos
-            </h2>
-        </template>
-
-        <div class="py-12">
-            <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+        <div class="py-6">
+            <div class="max-w-8xl mx-auto sm:px-6 lg:px-8">
                 <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                    <div class="p-6 bg-white border-b border-gray-200">
+                    <div class="p-8 bg-white border-b border-gray-200">
                         <!-- Menú de opciones -->
-                        <div class="flex space-x-4">
+                        <div class="flex justify-between items-center">
+                            <h2
+                                class="font-semibold text-xl text-gray-800 leading-tight"
+                            >
+                                Sistema de Gestión de Documento
+                            </h2>
                             <button
                                 @click="openReceiveModal"
                                 class="btn btn-primary"
                             >
-                                Recibir
-                            </button>
-                            <button
-                                @click="verDocumento"
-                                class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
-                            >
-                                Ver
-                            </button>
-                            <button
-                                @click="editarDocumento"
-                                class="bg-yellow-500 hover:bg-yellow-700 text-white font-bold py-2 px-4 rounded"
-                            >
-                                Editar
-                            </button>
-                            <button
-                                @click="eliminarDocumento"
-                                class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
-                            >
-                                Eliminar
+                                Recepcionar Documentos
                             </button>
                         </div>
 
-                        <!-- Aquí puedes agregar una tabla o lista de documentos -->
                         <div
-                            class="ag-theme-quartz mt-6"
-                            style="height: 400px; width: 100%"
-                        >
+                            class="ag-theme-quartz mt-3"
+                            style="height: 450px; width: 100%"
+                         >
                             <AgGridVue
                                 class="ag-theme-quartz"
                                 :columnDefs="colDefs"
@@ -52,6 +32,7 @@
                                 rowSelection="single"
                                 :defaultColDef="defaultColDef"
                                 style="width: 100%; height: 100%"
+                                filter = "true"
                             />
                         </div>
                     </div>
@@ -75,12 +56,49 @@ const modalReceive = ref(null);
 const documents = ref("");
 
 const colDefs = ref([
-    { field: "name", headerName: "Nombre" },
-    { field: "typeDocument", headerName: "Tipo de documento" },
-    { field: "documentNumber", headerName: "Número de documento" },
-    { field: "dateElaboration", headerName: "Fecha documento" },
-    { field: "originDependency", headerName: "Dependencia productora" },
-    
+    { field: "name",
+      headerName: "Nombre",
+      minWidth: 250,
+      checkboxSelection: (params) => {
+        return !!params.data
+      },
+    },
+    { field: "typeDocument", headerName: "Tipo de documento", minWidth: 200,},
+    { field: "documentNumber", headerName: "Número de documento", minWidth: 235, },
+    { field: "dateElaboration", headerName: "Fecha documento", minWidth: 250, },
+    { field: "originDependency", headerName: "Dependencia productora", minWidth: 250, },
+    {
+        headerName: "Acciones",
+        minWidth: 100,
+        cellRenderer: (params) => {
+            // Contenedor para los botones
+            const container = document.createElement("div");
+            container.classList.add("d-flex");
+
+            const viewButton = document.createElement("button");
+            viewButton.innerHTML = '<i class="fa-regular fa-eye"></i>';
+            viewButton.classList.add("btn", "btn-sm", "btn-info");
+            viewButton.setAttribute("title", "Ver Documento");
+            viewButton.onclick = () => showDocument(params.data);
+            container.appendChild(viewButton);
+
+            const editButton = document.createElement("button");
+            editButton.innerHTML = '<i class="fa-regular fa-pen-to-square"></i>';
+            editButton.classList.add("btn", "btn-sm", "btn-warning");
+            editButton.setAttribute("title", "Editar Documento");
+            editButton.onclick = () => editarDocumento(params.data.id);
+            container.appendChild(editButton);
+
+            const deleteButton = document.createElement("button");
+            deleteButton.innerHTML = '<i class="fas fa-trash"></i>';
+            deleteButton.classList.add("btn", "btn-sm", "btn-danger");
+            deleteButton.setAttribute("title", "Eliminar Documento")
+            deleteButton.onclick = () => eliminarDocumento(params.data.id);
+            container.appendChild(deleteButton);
+
+            return container;
+        },
+    },
 ]);
 
 const openReceiveModal = () => {
@@ -99,22 +117,12 @@ onMounted(() => {
     getDocuments();
 });
 
-const documentos = ref([
-    { id: 1, nombre: "Documento 1", fecha_creacion: "2023-01-01" },
-    { id: 2, nombre: "Documento 2", fecha_creacion: "2023-02-01" },
-    // Aquí puedes agregar más documentos o hacer la solicitud para obtenerlos desde el servidor.
-]);
-
-// Funciones para manejar las acciones del CRUD
-const recibirDocumento = () => {
-    // Lógica para recibir un nuevo documento
-    console.log("Recibiendo documento");
+const showDocument = (document) => {
+    const fullUrl = `http://127.0.0.1:8000/storage/${document.pdf_file_path}`;
+    window.open(fullUrl, "_blank");
 };
 
-const verDocumento = (id) => {
-    // Lógica para ver el detalle de un documento
-    console.log("Viendo documento", id);
-};
+
 
 const editarDocumento = (id) => {
     // Lógica para editar un documento
