@@ -24,7 +24,7 @@
                         <div
                             class="ag-theme-quartz mt-3"
                             style="height: 450px; width: 100%"
-                         >
+                        >
                             <AgGridVue
                                 class="ag-theme-quartz"
                                 :columnDefs="colDefs"
@@ -32,7 +32,7 @@
                                 rowSelection="single"
                                 :defaultColDef="defaultColDef"
                                 style="width: 100%; height: 100%"
-                                filter = "true"
+                                :localeText="localeText"
                             />
                         </div>
                     </div>
@@ -51,22 +51,32 @@ import ModalReceive from "./ModalReceive.vue";
 import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-quartz.css";
 import { AgGridVue } from "ag-grid-vue3";
+import { localeText } from "@/Helpers/AgGridLocaleText.ts";
 
 const modalReceive = ref(null);
 const documents = ref("");
 
 const colDefs = ref([
-    { field: "name",
-      headerName: "Nombre",
-      minWidth: 250,
-      checkboxSelection: (params) => {
-        return !!params.data
-      },
+    {
+        field: "name",
+        headerName: "Nombre",
+        minWidth: 250,
+        checkboxSelection: (params) => {
+            return !!params.data;
+        },
     },
-    { field: "typeDocument", headerName: "Tipo de documento", minWidth: 200,},
-    { field: "documentNumber", headerName: "Número de documento", minWidth: 235, },
-    { field: "dateElaboration", headerName: "Fecha documento", minWidth: 250, },
-    { field: "originDependency", headerName: "Dependencia productora", minWidth: 250, },
+    { field: "typeDocument", headerName: "Tipo de documento", minWidth: 200 },
+    {
+        field: "documentNumber",
+        headerName: "Número de documento",
+        minWidth: 235,
+    },
+    { field: "dateElaboration", headerName: "Fecha documento", minWidth: 250 },
+    {
+        field: "originDependency",
+        headerName: "Dependencia productora",
+        minWidth: 250,
+    },
     {
         headerName: "Acciones",
         minWidth: 100,
@@ -83,7 +93,8 @@ const colDefs = ref([
             container.appendChild(viewButton);
 
             const editButton = document.createElement("button");
-            editButton.innerHTML = '<i class="fa-regular fa-pen-to-square"></i>';
+            editButton.innerHTML =
+                '<i class="fa-regular fa-pen-to-square"></i>';
             editButton.classList.add("btn", "btn-sm", "btn-warning");
             editButton.setAttribute("title", "Editar Documento");
             editButton.onclick = () => editarDocumento(params.data.id);
@@ -92,7 +103,7 @@ const colDefs = ref([
             const deleteButton = document.createElement("button");
             deleteButton.innerHTML = '<i class="fas fa-trash"></i>';
             deleteButton.classList.add("btn", "btn-sm", "btn-danger");
-            deleteButton.setAttribute("title", "Eliminar Documento")
+            deleteButton.setAttribute("title", "Eliminar Documento");
             deleteButton.onclick = () => eliminarDocumento(params.data.id);
             container.appendChild(deleteButton);
 
@@ -100,6 +111,12 @@ const colDefs = ref([
         },
     },
 ]);
+
+const defaultColDef = {
+    filter: true,
+    sortable: true,
+    resizable: true,
+};
 
 const openReceiveModal = () => {
     if (modalReceive.value) {
@@ -121,8 +138,6 @@ const showDocument = (document) => {
     const fullUrl = `http://127.0.0.1:8000/storage/${document.pdf_file_path}`;
     window.open(fullUrl, "_blank");
 };
-
-
 
 const editarDocumento = (id) => {
     // Lógica para editar un documento
