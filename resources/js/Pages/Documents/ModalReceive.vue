@@ -1,10 +1,12 @@
 <template>
     <super-modal
         ref="modalReceive"
-        title="Recepcionar documentos"
+        :title="
+            documentSelected.id ? 'Editar documento' : 'Recepcionar documentos'
+        "
         key-modal="modalReceive"
-        accept-title="Guardar"
-        @accept="saveDocuement"
+        :accept-title="documentSelected.id ? 'Actualizar' : 'Guardar'"
+        @accept="documentSelected.id ? updateDocument() : saveDocument()"
         :is-loading="isLoading"
     >
         <template #body>
@@ -70,7 +72,7 @@
                             <label for="">Número de documento (*)</label>
                             <input
                                 class="form-control form-control-lg"
-                                type="number"
+                                type="text"
                                 v-model="FormUser.documentNumber"
                             />
                         </div>
@@ -156,6 +158,7 @@ import axios from "axios";
 import { ref, reactive, defineExpose } from "vue";
 
 const modalReceive = ref(null);
+const documentSelected = ref({});
 
 const aalert = reactive({
     open: false,
@@ -175,22 +178,43 @@ const FormUser = reactive({
     totalInventory: null,
     physicalLocation: null,
     pdfFile: null,
+    id: null,
 });
 
 function handleFileUpload(event) {
     FormUser.pdfFile = event.target.files[0];
 }
 
-function openModal() {
-    FormUser.originDependency = "",
-    FormUser.typeDocument = "",
-    FormUser.name = "",
-    FormUser.documentNumber = "",
-    FormUser.retentionTime = "",
-    FormUser.dateElaboration = "",
-    FormUser.totalInventory = "",
-    FormUser.physicalLocation = "",
-    FormUser.pdfFile = "",
+function openModal(document) {
+    if (document) {
+        documentSelected.value = document;
+        // Asignación de datos desde el documento seleccionado
+        FormUser.originDependency = document.originDependency || "";
+        FormUser.typeDocument = document.typeDocument || "";
+        FormUser.name = document.name || "";
+        FormUser.documentNumber = document.documentNumber || "";
+        FormUser.retentionTime = document.retentionTime || "";
+        FormUser.dateElaboration = document.dateElaboration || "";
+        FormUser.totalInventory = document.totalInventory || "";
+        FormUser.physicalLocation = document.physicalLocation || "";
+        FormUser.id = document.id || null;
+        FormUser.pdfFile = document.pdfFile || null;
+        
+    } else {
+        documentSelected.value = {};
+        // Reseteo de valores cuando no hay documento seleccionado
+        FormUser.originDependency = "";
+        FormUser.typeDocument = "";
+        FormUser.name = "";
+        FormUser.documentNumber = "";
+        FormUser.retentionTime = "";
+        FormUser.dateElaboration = "";
+        FormUser.totalInventory = "";
+        FormUser.physicalLocation = "";
+        FormUser.pdfFile = null;
+        FormUser.id = null;
+    }
+    // Abre el modal
     modalReceive.value.open();
 }
 
@@ -198,13 +222,13 @@ function CloseModal() {
     modalReceive.value.close();
 }
 
-const saveDocuement = async () => {
+const saveDocument = async () => {
     aalert.open = false;
     const formData = new FormData();
     formData.append("originDependency", FormUser.originDependency);
     formData.append("typeDocument", FormUser.typeDocument);
     formData.append("name", FormUser.name);
-    formData.append("documentNumber", FormUser.documentNumber );
+    formData.append("documentNumber", FormUser.documentNumber);
     formData.append("retentionTime", FormUser.retentionTime);
     formData.append("dateElaboration", FormUser.dateElaboration);
     formData.append("totalInventory", FormUser.totalInventory);
@@ -232,6 +256,34 @@ const saveDocuement = async () => {
         console.log("Error al guardar documento:", error);
         alert("Hubo un error al guardar el documento");
     }
+};
+
+const updateDocument = async () => {
+    aalert.open = false;
+    await axios
+        .put(route("documents.update", FormUser.id), {
+            originDependency: FormUser.originDependency,
+            typeDocument: FormUser.typeDocument,
+            name: FormUser.name,
+            documentNumber: FormUser.documentNumber,
+            retentionTime: FormUser.retentionTime,
+            dateElaboration: FormUser.dateElaboration,
+            totalInventory: FormUser.totalInventory,
+            physicalLocation: FormUser.physicalLocation,
+            pdfFile: FormUser.pdfFile,
+        })
+        .then((res) => {
+            aalert.open = true;
+            aalert.Title = "¡Bien hecho!";
+            aalert.Body = "Se actualizó el documento correctamente.";
+            aalert.Type = "success";
+            aalert.Redirect = "documents.index";
+        })
+        .catch((err) => {
+            err.value = err.response.data;
+            console.log("Error al actulizar documento:", err);
+            alert("Hubo un error al actulizar el documento");
+        });
 };
 
 defineExpose({ open, openModal, CloseModal });

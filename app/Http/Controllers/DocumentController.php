@@ -75,19 +75,49 @@ class DocumentController extends Controller
     }
 
     /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Document $document)
-    {
-        //
-    }
-
-    /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Document $document)
+    public function update(Request $request, $id)
     {
-        //
+        $validator = Validator::make($request->all(), [
+            'originDependency' => 'required|string',
+            'typeDocument' => 'required|string',
+            'name' => 'required|string',
+            'documentNumber'=> 'required|string',
+            'retentionTime' => 'required|integer',
+            'dateElaboration' => 'required|date',
+            'totalInventory' => 'required|string',
+            'physicalLocation' => 'required|string|max:1000',
+            'pdfFile' => 'nullable|file|mimes:pdf|max:2048',
+        ]);
+
+        // Comprobar si la validación falla
+        if ($validator->fails()) {
+            // Retornar los errores en formato JSON
+            return response()->json([
+                'errors' => $validator->errors()
+            ], 422); // Código 422: Unprocessable Entity
+        }
+
+        $document = Document::find($id);
+
+        if (!$document) {
+            return response()->json(['error' => 'Documento no encontrado'], 404);
+        }
+
+        $document->update([
+            'originDependency' => $request->originDependency,
+            'typeDocument' => $request->typeDocument,
+            'name' => $request->name,
+            'documentNumber' => $request->documentNumber,
+            'retentionTime' => $request->retentionTime,
+            'dateElaboration' => $request->dateElaboration,
+            'totalInventory' => $request->totalInventory,
+            'physicalLocation' => $request->physicalLocation,
+            'pdfFile' => $request->pdfFile,
+        ]);
+
+        return response("ok", 200);
     }
 
     /**

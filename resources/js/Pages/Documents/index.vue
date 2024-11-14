@@ -97,7 +97,7 @@ const colDefs = ref([
                 '<i class="fa-regular fa-pen-to-square"></i>';
             editButton.classList.add("btn", "btn-sm", "btn-warning");
             editButton.setAttribute("title", "Editar Documento");
-            editButton.onclick = () => editarDocumento(params.data.id);
+            editButton.onclick = () => openReceiveModal(params.data);
             container.appendChild(editButton);
 
             const deleteButton = document.createElement("button");
@@ -118,9 +118,9 @@ const defaultColDef = {
     resizable: true,
 };
 
-const openReceiveModal = () => {
+const openReceiveModal = (document) => {
     if (modalReceive.value) {
-        modalReceive.value.openModal();
+        modalReceive.value.openModal(document);
     }
 };
 
