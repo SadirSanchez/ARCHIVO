@@ -44,6 +44,7 @@ Route::middleware('auth')->group(function () {
     Route::post('/Documents/receive', [DocumentController::class, 'store'])->name('documents.store');
     Route::get('/Documents/consult', [DocumentController::class, 'getDocuments'])->name('documents.getDocuments');
     Route::put('/Documents/update/{id}', [DocumentController::class, 'update'])->name('documents.update');
+    Route::put('/Documents/delete/{id}', [DocumentController::class, 'delete'])->name('documents.delete');
 });
 
 require __DIR__ . '/auth.php';

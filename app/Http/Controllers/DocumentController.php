@@ -6,6 +6,7 @@ use App\Models\Document;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Storage;
 
 class DocumentController extends Controller
 {
@@ -123,8 +124,25 @@ class DocumentController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Document $document)
+    public function delete(Request $request, $id)
     {
-        //
+        // Buscar el documento por su ID
+        $document = Document::find($id);
+
+        // Comprobar si el documento existe
+        if (!$document) {
+            return response()->json(['error' => 'Documento no encontrado'], 404);
+        }
+
+        // Eliminar el archivo PDF asociado si existe
+        if ($document->pdf_file_path && Storage::disk('public')->exists($document->pdf_file_path)) {
+            Storage::disk('public')->delete($document->pdf_file_path);
+        }
+
+        // Eliminar el registro del documento
+        $document->delete();
+
+        // Responder con un mensaje de éxito
+        return response()->json(['message' => 'Documento eliminado correctamente'], 200);
     }
 }
