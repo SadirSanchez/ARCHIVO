@@ -40,6 +40,7 @@
             </div>
         </div>
         <ModalReceive ref="modalReceive" />
+        <ModalConfirmDeleteDocument ref="mdlConfirmDeleteDocument" />
     </AuthenticatedLayout>
 </template>
 
@@ -52,9 +53,11 @@ import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-quartz.css";
 import { AgGridVue } from "ag-grid-vue3";
 import { localeText } from "@/Helpers/AgGridLocaleText.ts";
+import ModalConfirmDeleteDocument from "./ModalConfirmDeleteDocument.vue";
 
 const modalReceive = ref(null);
 const documents = ref("");
+const mdlConfirmDeleteDocument = ref(null);
 
 const colDefs = ref([
     {
@@ -104,7 +107,7 @@ const colDefs = ref([
             deleteButton.innerHTML = '<i class="fas fa-trash"></i>';
             deleteButton.classList.add("btn", "btn-sm", "btn-danger");
             deleteButton.setAttribute("title", "Eliminar Documento");
-            deleteButton.onclick = () => eliminarDocumento(params.data.id);
+            deleteButton.onclick = () => openDeleteDocument(params.data);
             container.appendChild(deleteButton);
 
             return container;
@@ -139,15 +142,9 @@ const showDocument = (document) => {
     window.open(fullUrl, "_blank");
 };
 
-const editarDocumento = (id) => {
-    // Lógica para editar un documento
-    console.log("Editando documento", id);
-};
-
-const eliminarDocumento = (id) => {
-    // Lógica para eliminar un documento
-    if (confirm("¿Estás seguro de eliminar este documento?")) {
-        console.log("Eliminando documento", id);
+const openDeleteDocument = (document) => {
+    if (mdlConfirmDeleteDocument.value) {
+        mdlConfirmDeleteDocument.value.openModalDelete(document);
     }
 };
 </script>
