@@ -1,0 +1,27 @@
+stages:
+  - build
+  - test
+  - deploy
+
+build:
+  stage: build
+  script: 
+    - echo "Building Laravel project..."
+    - composer install
+    - php artisan config:cache
+    - php artisan route:cache
+    - php artisan view:cache
+
+test:
+  stage: test
+  script: 
+    - echo "Running Laravel tests..."
+    - cp .env.example .env
+    - php artisan key:generate
+    - php artisan migrate --force
+    - ./vendor/bin/phpunit
+
+deploy:
+  stage: deploy
+  script: 
+    - echo "No deployment needed. Working locally."
