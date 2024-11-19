@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\Document;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Storage;
 
 class DocumentController extends Controller
 {
@@ -12,7 +14,7 @@ class DocumentController extends Controller
      * Display a listing of the resource.
      */
     public function index()
-    { 
+    {
         return Inertia::render("Documents/index");
     }
 
@@ -29,38 +31,118 @@ class DocumentController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $validator = Validator::make($request->all(), [
+            'originDependency' => 'required|string',
+            'typeDocument' => 'required|string',
+            'name' => 'required|string',
+            'documentNumber'=> 'required|string',
+            'retentionTime' => 'required|integer',
+            'dateElaboration' => 'required|date',
+            'totalInventory' => 'required|string',
+            'physicalLocation' => 'required|string|max:1000',
+            'pdfFile' => 'nullable|file|mimes:pdf|max:2048',
+        ]);
+
+        // Comprobar si la validación falla
+        if ($validator->fails()) {
+            // Retornar los errores en formato JSON
+            return response()->json([
+                'errors' => $validator->errors()
+            ], 422); // Código 422: Unprocessable Entity
+        }
+
+        // Crear el documento
+        $document = Document::create($request->except('pdfFile'));
+
+        if ($request->hasFile('pdfFile')) {
+            $pdfPath = $request->file('pdfFile')->store('documents', 'public');
+            $document->pdf_file_path = $pdfPath; // Guardamos la ruta en la base de datos
+            $document->save();
+        }
+
+        // Respuesta en formato JSON
+        return response()->json(['message' => 'Documento creado correctamente'], 201);
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(Document $document)
+    public function getDocuments()
     {
-        //
-    }
+        $documents = Document::latest()->get();
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Document $document)
-    {
-        //
+        return response() ->json($documents, 200);
+
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Document $document)
+    public function update(Request $request, $id)
     {
-        //
+        $validator = Validator::make($request->all(), [
+            'originDependency' => 'required|string',
+            'typeDocument' => 'required|string',
+            'name' => 'required|string',
+            'documentNumber'=> 'required|string',
+            'retentionTime' => 'required|integer',
+            'dateElaboration' => 'required|date',
+            'totalInventory' => 'required|string',
+            'physicalLocation' => 'required|string|max:1000',
+            'pdfFile' => 'nullable|file|mimes:pdf|max:2048',
+        ]);
+
+        // Comprobar si la validación falla
+        if ($validator->fails()) {
+            // Retornar los errores en formato JSON
+            return response()->json([
+                'errors' => $validator->errors()
+            ], 422); // Código 422: Unprocessable Entity
+        }
+
+        $document = Document::find($id);
+
+        if (!$document) {
+            return response()->json(['error' => 'Documento no encontrado'], 404);
+        }
+
+        $document->update([
+            'originDependency' => $request->originDependency,
+            'typeDocument' => $request->typeDocument,
+            'name' => $request->name,
+            'documentNumber' => $request->documentNumber,
+            'retentionTime' => $request->retentionTime,
+            'dateElaboration' => $request->dateElaboration,
+            'totalInventory' => $request->totalInventory,
+            'physicalLocation' => $request->physicalLocation,
+            'pdfFile' => $request->pdfFile,
+        ]);
+
+        return response("ok", 200);
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Document $document)
+    public function delete(Request $request, $id)
     {
-        //
+        // Buscar el documento por su ID
+        $document = Document::find($id);
+
+        // Comprobar si el documento existe
+        if (!$document) {
+            return response()->json(['error' => 'Documento no encontrado'], 404);
+        }
+
+        // Eliminar el archivo PDF asociado si existe
+        if ($document->pdf_file_path && Storage::disk('public')->exists($document->pdf_file_path)) {
+            Storage::disk('public')->delete($document->pdf_file_path);
+        }
+
+        // Eliminar el registro del documento
+        $document->delete();
+
+        // Responder con un mensaje de éxito
+        return response()->json(['message' => 'Documento eliminado correctamente'], 200);
     }
 }

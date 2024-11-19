@@ -1,6 +1,10 @@
 import './bootstrap';
 import '../css/app.css';
 import 'bootstrap';
+import SuperModal from './Components/Modals/SuperModal.vue';
+import Alerts from './Components/Modals/Alerts.vue';
+import 'bootstrap/dist/css/bootstrap.min.css';
+import '@fortawesome/fontawesome-free/css/all.min.css';
 
 import { createApp, h } from 'vue';
 import { createInertiaApp } from '@inertiajs/vue3';
@@ -16,7 +20,9 @@ createInertiaApp({
         return createApp({ render: () => h(App, props) })
             .use(plugin)
             .use(ZiggyVue)
-            .mount(el);
+            .mount(el)
+            .component("SuperModal", SuperModal)
+            .component("Alerts", Alerts)
     },
     progress: {
         color: '#4B5563',
