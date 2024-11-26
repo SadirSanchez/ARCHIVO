@@ -18,7 +18,7 @@
                       <img
                           v-if="Type === 'success'"
                           src="/assets/images/gif/68994-success.gif"
-                          style="max-height: 200px"
+                          style="max-height: 200px; max-width: 200px;"
                           alt="Success"
                       />
                       <img

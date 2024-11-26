@@ -15,7 +15,7 @@
                             </h2>
                             <button
                                 @click="openReceiveModal"
-                                class="btn btn-success"
+                                class="btn btn-primary"
                             >
                                 Recepcionar Documentos
                             </button>
