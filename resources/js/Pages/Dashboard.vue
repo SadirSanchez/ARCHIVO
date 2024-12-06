@@ -1,65 +1,11 @@
-<script setup>
-import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
-import { Head } from '@inertiajs/vue3';
-import { ref } from 'vue';
-
-const archivos = ref([
-    { 
-        titulo: 'POLITICA', 
-        descripcion: 'Aquí puedes consultar el Documento de Política.', 
-        documentos: [{ nombre: 'Documento Original', url: '/storage/documents/info1.pdf' }] 
-    },
-    { 
-        titulo: 'PGD', 
-        descripcion: 'Aquí puedes consultar el Documento PGD.', 
-        documentos: [{ nombre: 'Documento Original', url: '' }]
-    },
-    { 
-        titulo: 'TRD', 
-        descripcion: 'Aquí puedes consultar el Documento TRD.', 
-        documentos: [{ nombre: 'Documento Original', url: '' }] 
-    },
-    { 
-        titulo: 'PINAR', 
-        descripcion: 'Aquí puedes consultar el Documento Pinar.', 
-        documentos: [{ nombre: 'Documento Original', url: '' }] 
-    },
-    { 
-        titulo: 'INVENTARIO', 
-        descripcion: 'Aquí puedes consultar el Documento de Inventario.', 
-        documentos: [{ nombre: 'Documento Original', url: '' }] 
-    },
-    { 
-        titulo: 'SIC', 
-        descripcion: 'Aquí puedes consultar el Documento de SIC.', 
-        documentos: [{ nombre: 'Documento Original', url: '' }] 
-    },
-    
-   
-]);
-
-
-function handleFileUpload(event, index) {
-    const file = event.target.files[0];
-    if (file) {
-        const newUrl = URL.createObjectURL(file);
-        const newDocumento = { nombre: file.name, url: newUrl };
-
-        
-        archivos.value[index].documentos.push(newDocumento);
-
-        console.log(`Archivo "${file.name}" subido para la tarjeta "${archivos.value[index].titulo}".`);
-    }
-}
-</script>
-
 <template>
     <Head title="Inicio" />
 
     <AuthenticatedLayout>
         <template #header></template>
 
-        <div class="py-12">
+        <!-- Contenedor principal con fondo blanco -->
+        <div class="py-12 bg-white">
             <div class="container">
                 <!-- Contenedor de tarjetas -->
                 <div class="row g-4 justify-content-center">
@@ -178,13 +124,56 @@ function handleFileUpload(event, index) {
     </AuthenticatedLayout>
 </template>
 
+<script setup>
+import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
+import { Head } from '@inertiajs/vue3';
+import { ref } from 'vue';
+
+const archivos = ref([
+    { 
+        titulo: 'POLITICA', 
+        documentos: [{ nombre: 'Documento Original', url: '/storage/documents/info1.pdf' }] 
+    },
+    { 
+        titulo: 'PGD', 
+        documentos: [{ nombre: 'Documento Original', url: '' }]
+    },
+    { 
+        titulo: 'TRD', 
+        documentos: [{ nombre: 'Documento Original', url: '' }] 
+    },
+    { 
+        titulo: 'PINAR', 
+        documentos: [{ nombre: 'Documento Original', url: '' }] 
+    },
+    { 
+        titulo: 'INVENTARIO', 
+        documentos: [{ nombre: 'Documento Original', url: '' }] 
+    },
+    { 
+        titulo: 'SIC', 
+        documentos: [{ nombre: 'Documento Original', url: '' }] 
+    },
+]);
+
+function handleFileUpload(event, index) {
+    const file = event.target.files[0];
+    if (file) {
+        const newUrl = URL.createObjectURL(file);
+        const newDocumento = { nombre: file.name, url: newUrl };
+        archivos.value[index].documentos.push(newDocumento);
+        console.log(`Archivo "${file.name}" subido para la tarjeta "${archivos.value[index].titulo}".`);
+    }
+}
+</script>
+
 <style>
 .card {
     transition: transform 0.3s ease, box-shadow 0.3s ease;
-    max-width: 100%;
+    width: 300px;
     border-radius: 12px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    height: auto; 
+    height: 210px; 
     margin: 0 auto; 
 }
 
@@ -195,7 +184,7 @@ function handleFileUpload(event, index) {
 
 .ratio {
     overflow: hidden;
-    background-color: #f1f1f1; 
+    background-color: #ffffff; 
     border-radius: 8px; 
 }
 
