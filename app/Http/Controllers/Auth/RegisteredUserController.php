@@ -8,7 +8,6 @@ use App\Providers\RouteServiceProvider;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules;
 use Inertia\Inertia;
@@ -43,10 +42,13 @@ class RegisteredUserController extends Controller
             'password' => Hash::make($request->password),
         ]);
 
+        // Disparar el evento de registro (opcional)
         event(new Registered($user));
 
-        Auth::login($user);
 
+    
         return redirect(RouteServiceProvider::HOME);
+        // Redirigir a la página de usuarios registrados
+        return redirect()->route('users.index')->with('success', 'Usuario registrado correctamente.');
     }
 }
