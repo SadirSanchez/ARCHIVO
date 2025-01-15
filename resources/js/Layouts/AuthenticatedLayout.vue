@@ -123,6 +123,7 @@ const user = props.auth.user; // Aquí está el usuario autenticado
   <li>
     <a
       href="#"
+      @click.prevent="$inertia.visit(route('users.index'))"
       class="menu-item clean-link block py-2 px-4 text-sm hover:bg-gray-200 rounded-lg"
     >
       Ver Usuarios

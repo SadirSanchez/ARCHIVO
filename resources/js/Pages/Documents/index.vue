@@ -24,7 +24,7 @@
                         <!-- Tabla de documentos -->
                         <div
                             class="ag-theme-quartz mt-3"
-                            style="height: 450px; width: 100%"
+                            style="height: 350px; width: 100%"
                         >
                             <AgGridVue
                                 class="ag-theme-quartz"

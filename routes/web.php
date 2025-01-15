@@ -2,7 +2,7 @@
 
 use App\Http\Controllers\DocumentController;
 use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\UserController;  // Controlador de usuarios
+use App\Http\Controllers\UserController;
 use App\Http\Controllers\Auth\RegisteredUserController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
@@ -43,9 +43,9 @@ Route::middleware('auth')->group(function () {
     Route::put('/Documents/delete/{id}', [DocumentController::class, 'delete'])->name('documents.delete');
 });
 
-// Rutas para gestionar usuarios
+// Grupo de rutas protegidas para gestionar usuarios
 Route::middleware(['auth', 'verified'])->group(function () {
-    // Página principal de usuarios (listar usuarios)
+    // Ruta para listar los usuarios
     Route::get('/users', [UserController::class, 'index'])->name('users.index');
 
     // Página para mostrar el formulario de registro
@@ -53,11 +53,18 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     // Procesar el registro del nuevo usuario
     Route::post('/users/register', [RegisteredUserController::class, 'store'])->name('users.register.store');
+
+    // Ruta para mostrar el formulario de edición con los datos del usuario
+    Route::get('/users/edit/{id}', [RegisteredUserController::class, 'edit'])->name('users.edit');
+
+    // Ruta para actualizar los datos del usuario
+    Route::put('/users/update/{id}', [RegisteredUserController::class, 'update'])->name('users.update');
+
+    // Ruta para eliminar un usuario registrado
+    Route::delete('/users/{id}', [UserController::class, 'destroy'])->name('users.destroy');
 });
 
-// Ruta original de registro global (para usuarios externos)
-Route::get('/users/register', [RegisteredUserController::class, 'create'])->name('users.register');
-Route::post('/users/register', [RegisteredUserController::class, 'store'])->name('users.register.store');
+
 
 
 // Rutas de autenticación de Laravel Breeze o Jetstream
