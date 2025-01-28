@@ -11,12 +11,12 @@
         <!-- Tabla de usuarios -->
         <div class="ag-theme-quartz" style="height: 350px; width: 100%">
           <AgGridVue
+            class="ag-theme-quartz"
             :columnDefs="colDefs"
             :rowData="users"
             rowSelection="single"
             :defaultColDef="defaultColDef"
             style="width: 103%; height: 100%"
-            
             :localeText="localeText"
           />
         </div>
@@ -26,23 +26,18 @@
 </template>
 
 <script setup>
-import { ref, computed } from "vue";
+import { ref, computed, onUnmounted, onMounted } from "vue";
 import { usePage, router } from "@inertiajs/vue3";
-import { AgGridVue } from "ag-grid-vue3";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
+import "ag-grid-community/styles/ag-grid.css";
+import "ag-grid-community/styles/ag-theme-quartz.css";
+import { AgGridVue } from "ag-grid-vue3";
 import { localeText } from "@/Helpers/AgGridLocaleText.ts";
 
-// Datos de usuarios obtenidos desde el servidor
-const { props } = usePage();
-const users = ref([...props.users]); // Convertimos a `ref` para poder modificarlo
+const users = ref();
 
 // Definición de columnas para la tabla
-const colDefs = [
-  {
-    field: "id",
-    headerName: "ID",
-    hide: true, // Ocultar columna ID en la tabla
-  },
+const colDefs = ref([
   {
     field: "name",
     headerName: "Nombre de Usuario",
@@ -57,8 +52,7 @@ const colDefs = [
     field: "created_at",
     headerName: "Fecha de Registro",
     minWidth: 200,
-    valueFormatter: (params) =>
-      new Date(params.value).toLocaleString(),
+    valueFormatter: (params) => new Date(params.value).toLocaleString(),
   },
   {
     headerName: "Opciones",
@@ -66,8 +60,6 @@ const colDefs = [
     cellRenderer: (params) => {
       const container = document.createElement("div");
       container.classList.add("d-flex", "gap-2");
-
-
 
       // Botón para editar al usuario
       const editButton = document.createElement("button");
@@ -88,7 +80,7 @@ const colDefs = [
       return container;
     },
   },
-];
+]);
 
 // Configuración por defecto de las columnas
 const defaultColDef = {
@@ -97,7 +89,12 @@ const defaultColDef = {
   resizable: true,
 };
 
-
+const getUsers = async () => {
+  await axios.get(route("users.getUsers"), {}).then((res) => {
+    users.value = res.data;
+    console.log("Usuarios: ", users.value);
+  });
+};
 
 // Función para redirigir al formulario de edición de usuarios
 const editUser = (user) => {
@@ -119,27 +116,8 @@ const deleteUser = (user) => {
     });
   }
 };
+
+onMounted(() => {
+  getUsers();
+});
 </script>
-
-<style scoped>
-/* Ajuste para centrar contenido en la parte superior */
-html,
-body {
-  height: 100%;
-  margin: 0;
-  overflow-x: hidden;
-}
-
-h1 {
-  margin-top: 0;
-}
-
-.ag-theme-quartz {
-  border: 1px solid #ddd;
-  border-radius: 8px;
-}
-
-.mt-6 {
-  margin-top: 1rem; /* Reduce espacio superior */
-}
-</style>

@@ -54,6 +54,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
     // Procesar el registro del nuevo usuario
     Route::post('/users/register', [RegisteredUserController::class, 'store'])->name('users.register.store');
 
+    Route::get('/users/consult', [UserController::class, 'getUsers'])->name('users.getUsers');
+
     // Ruta para mostrar el formulario de edición con los datos del usuario
     Route::get('/users/edit/{id}', [RegisteredUserController::class, 'edit'])->name('users.edit');
 
