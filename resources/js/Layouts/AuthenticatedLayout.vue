@@ -1,10 +1,10 @@
 <script setup>
-import { ref } from 'vue';
-import ApplicationLogo from '@/Components/ApplicationLogo.vue';
-import Dropdown from '@/Components/Dropdown.vue';
-import DropdownLink from '@/Components/DropdownLink.vue';
-import NavLink from '@/Components/NavLink.vue';
-import { usePage } from '@inertiajs/vue3';
+import { ref } from "vue";
+import ApplicationLogo from "@/Components/ApplicationLogo.vue";
+import Dropdown from "@/Components/Dropdown.vue";
+import DropdownLink from "@/Components/DropdownLink.vue";
+import NavLink from "@/Components/NavLink.vue";
+import { usePage } from "@inertiajs/vue3";
 
 const isSidebarOpen = ref(false);
 const toggleSidebar = () => {
@@ -22,19 +22,44 @@ const user = props.auth.user; // Aquí está el usuario autenticado
 <template>
   <div class="flex h-screen bg-gray-100 font-poppins">
     <!-- Menú lateral -->
-    <div 
-      :class="{'w-40': isSidebarOpen, 'w-16': !isSidebarOpen}" 
-      class="bg-white text-blue-600 transition-all duration-300 shadow-md border-r border-gray-300 flex flex-col h-full">
-      
+    <div
+      :class="{ 'w-40': isSidebarOpen, 'w-16': !isSidebarOpen }"
+      class="bg-white text-blue-600 transition-all duration-300 shadow-md border-r border-gray-300 flex flex-col h-full"
+    >
       <!-- Botón de alternar menú -->
-      <button 
-        @click="toggleSidebar" 
-        class="px-4 py-3 hover:bg-gray-100 focus:outline-none transition-all flex items-center justify-center transform hover:scale-105">
-        <svg v-if="isSidebarOpen" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="h-6 w-6 mx-auto text-blue-600 transition-all hover:text-blue-800">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+      <button
+        @click="toggleSidebar"
+        class="px-4 py-3 hover:bg-gray-100 focus:outline-none transition-all flex items-center justify-center transform hover:scale-105"
+      >
+        <svg
+          v-if="isSidebarOpen"
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+          class="h-6 w-6 mx-auto text-blue-600 transition-all hover:text-blue-800"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M6 18L18 6M6 6l12 12"
+          />
         </svg>
-        <svg v-else xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="h-6 w-6 mx-auto text-blue-600 transition-all hover:text-blue-800">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+        <svg
+          v-else
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+          class="h-6 w-6 mx-auto text-blue-600 transition-all hover:text-blue-800"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M4 6h16M4 12h16M4 18h16"
+          />
         </svg>
       </button>
 
@@ -42,53 +67,87 @@ const user = props.auth.user; // Aquí está el usuario autenticado
       <div v-if="isSidebarOpen" class="mt-6 flex-grow">
         <ul class="space-y-4 px-4 flex flex-col justify-center items-start">
           <li>
-            <NavLink 
-              :href="route('documents.index')" 
-              :active="route().current('documents.index')" 
-              class="menu-item clean-link">
+            <NavLink
+              :href="route('documents.index')"
+              :active="route().current('documents.index')"
+              class="menu-item clean-link"
+            >
               Documentos
             </NavLink>
           </li>
           <li class="relative">
             <!-- Opción de Usuarios con acción para desplegar el submenú -->
-            <a 
-              href="#" 
-              @click.prevent="isUsuariosOpen = !isUsuariosOpen" 
-              class="menu-item clean-link flex items-center justify-between w-full">
+            <a
+              href="#"
+              @click.prevent="isUsuariosOpen = !isUsuariosOpen"
+              class="menu-item clean-link flex items-center justify-between w-full"
+            >
               <span>Usuarios</span>
               <!-- Icono de flecha -->
-              <svg v-if="isUsuariosOpen" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="h-4 w-4 text-blue-600">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+              <svg
+                v-if="isUsuariosOpen"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                class="h-4 w-4 text-blue-600"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M19 9l-7 7-7-7"
+                />
               </svg>
-              <svg v-else xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="h-4 w-4 text-blue-600">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+              <svg
+                v-else
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                class="h-4 w-4 text-blue-600"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M9 5l7 7-7 7"
+                />
               </svg>
             </a>
             <!-- Submenú desplegable -->
-            <ul 
-              v-if="isUsuariosOpen" 
-              class="mt-2 pl-6 bg-gray-100 border border-gray-300 rounded-lg shadow-md">
-              <li>
-                <a 
-                  href="#" 
-                  class="menu-item clean-link block py-2 px-4 text-sm hover:bg-gray-200 rounded-lg">
-                  Ver Usuarios
-                </a>
-              </li>
-              <li>
-                <a 
-                  href="#" 
-                  class="menu-item clean-link block py-2 px-4 text-sm hover:bg-gray-200 rounded-lg">
-                  Registrar
-                </a>
-              </li>
-            </ul>
+<ul
+  v-if="isUsuariosOpen"
+  class="mt-2 pl-6 bg-gray-100 border border-gray-300 rounded-lg shadow-md"
+>
+  <li>
+    <a
+      href="#"
+      @click.prevent="$inertia.visit(route('users.index'))"
+      class="menu-item clean-link block py-2 px-4 text-sm hover:bg-gray-200 rounded-lg"
+    >
+      Ver Usuarios
+    </a>
+  </li>
+  <li>
+    <a
+      href="#"
+      @click.prevent="$inertia.visit(route('users.register'))"
+      class="menu-item clean-link block py-2 px-4 text-sm hover:bg-gray-200 rounded-lg"
+    >
+      Registrar
+    </a>
+  </li>
+</ul>
+
+
           </li>
           <li>
-            <a 
-             :href="route('documents.index')" 
-              :active="route().current('documents.index')"  
-              class="menu-item clean-link">
+            <a
+              :href="route('documents.index')"
+              :active="route().current('documents.index')"
+              class="menu-item clean-link"
+            >
               Alertas
             </a>
           </li>
@@ -99,33 +158,50 @@ const user = props.auth.user; // Aquí está el usuario autenticado
     <!-- Área principal -->
     <div class="flex-1 flex flex-col">
       <!-- Menú superior -->
-      <div class="bg-white text-blue-600 px-3 py-1.5 shadow-md flex justify-between items-center border-b border-gray-300">
+      <div
+        class="bg-white text-blue-600 px-3 py-1.5 shadow-md flex justify-between items-center border-b border-gray-300"
+      >
         <!-- Enlace a Inicio -->
-        <NavLink 
-          :href="route('dashboard')" 
-          :active="route().current('dashboard')" 
-          class="header-item clean-link">
+        <NavLink
+          :href="route('dashboard')"
+          :active="route().current('dashboard')"
+          class="header-item clean-link"
+        >
           <div class="relative flex items-center">
             <!-- Icono GIF delante de 'Inicio' -->
-            <img src="/assets/images/gif/folder.gif" alt="Icono GIF" class="absolute w-8 h-8 opacity-80 left-0 z-10" />
-            
-            <span class="menu-item clean-link ml-10">Inicio</span> <!-- Desplazamos el texto para que no se superponga con el icono -->
+            <img
+              src="/assets/images/gif/folder.gif"
+              alt="Icono GIF"
+              class="absolute w-8 h-8 opacity-80 left-0 z-10"
+            />
+
+            <span class="menu-item clean-link ml-10">Inicio</span>
+            <!-- Desplazamos el texto para que no se superponga con el icono -->
           </div>
         </NavLink>
-        
+
         <!-- Dropdown con el correo electrónico -->
         <Dropdown>
           <template #trigger>
             <!-- Mostrar el correo del usuario autenticado -->
             <button class="menu-item header-item clean-link">
-              {{ user.name }} <!-- Cambié el correo por el nombre -->
+              {{ user.name }}
+              <!-- Cambié el correo por el nombre -->
             </button>
           </template>
           <template #content>
-            <DropdownLink :href="route('profile.edit')" class="menu-item dropdown-item">
+            <DropdownLink
+              :href="route('profile.edit')"
+              class="menu-item dropdown-item"
+            >
               Profile
             </DropdownLink>
-            <DropdownLink :href="route('logout')" method="post" as="button" class="menu-item dropdown-item">
+            <DropdownLink
+              :href="route('logout')"
+              method="post"
+              as="button"
+              class="menu-item dropdown-item"
+            >
               Log Out
             </DropdownLink>
           </template>
