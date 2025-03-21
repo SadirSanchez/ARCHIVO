@@ -194,7 +194,7 @@ const user = props.auth.user; // Aquí está el usuario autenticado
               :href="route('profile.edit')"
               class="menu-item dropdown-item"
             >
-              Profile
+              Perfil
             </DropdownLink>
             <DropdownLink
               :href="route('logout')"
@@ -202,7 +202,7 @@ const user = props.auth.user; // Aquí está el usuario autenticado
               as="button"
               class="menu-item dropdown-item"
             >
-              Log Out
+              Cerrar sesión
             </DropdownLink>
           </template>
         </Dropdown>
