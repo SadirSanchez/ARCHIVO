@@ -2,7 +2,7 @@
     <Head title="Documents" />
 
     <AuthenticatedLayout>
-        <div class="py-6">
+        <div class="py-6 bg-white">
             <div class="max-w-8xl mx-auto sm:px-6 lg:px-8">
                 <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                     <div class="p-8 bg-white border-b border-gray-200">
@@ -21,9 +21,10 @@
                             </button>
                         </div>
 
+                        <!-- Tabla de documentos -->
                         <div
                             class="ag-theme-quartz mt-3"
-                            style="height: 450px; width: 100%"
+                            style="height: 350px; width: 100%"
                         >
                             <AgGridVue
                                 class="ag-theme-quartz"
@@ -64,9 +65,7 @@ const colDefs = ref([
         field: "name",
         headerName: "Nombre",
         minWidth: 250,
-        checkboxSelection: (params) => {
-            return !!params.data;
-        },
+        checkboxSelection: (params) => !!params.data,
     },
     { field: "typeDocument", headerName: "Tipo de documento", minWidth: 200 },
     {
@@ -84,7 +83,6 @@ const colDefs = ref([
         headerName: "Acciones",
         minWidth: 100,
         cellRenderer: (params) => {
-            // Contenedor para los botones
             const container = document.createElement("div");
             container.classList.add("d-flex");
 
@@ -96,8 +94,7 @@ const colDefs = ref([
             container.appendChild(viewButton);
 
             const editButton = document.createElement("button");
-            editButton.innerHTML =
-                '<i class="fa-regular fa-pen-to-square"></i>';
+            editButton.innerHTML = '<i class="fa-regular fa-pen-to-square"></i>';
             editButton.classList.add("btn", "btn-sm", "btn-warning");
             editButton.setAttribute("title", "Editar Documento");
             editButton.onclick = () => openReceiveModal(params.data);

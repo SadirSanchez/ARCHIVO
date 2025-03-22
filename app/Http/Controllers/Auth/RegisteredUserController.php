@@ -8,7 +8,6 @@ use App\Providers\RouteServiceProvider;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules;
 use Inertia\Inertia;
@@ -43,10 +42,46 @@ class RegisteredUserController extends Controller
             'password' => Hash::make($request->password),
         ]);
 
+        // Disparar el evento de registro (opcional)
         event(new Registered($user));
 
-        Auth::login($user);
+        return redirect()->route('users.index')->with('success', 'Usuario registrado correctamente.');
+    }
 
-        return redirect(RouteServiceProvider::HOME);
+    /**
+     * Muestra el formulario de registro con los datos del usuario a editar.
+     */
+    public function edit($id): Response
+    {
+        $user = User::findOrFail($id);
+
+        return Inertia::render('Auth/Register', [
+            'user' => $user, // Pasar datos del usuario a la vista
+        ]);
+    }
+
+    /**
+     * Actualiza los datos del usuario en la base de datos.
+     */
+    public function update(Request $request, $id): RedirectResponse
+    {
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|string|email|max:255|unique:users,email,' . $id,
+            'password' => ['nullable', 'confirmed', Rules\Password::defaults()],
+        ]);
+
+        $user = User::findOrFail($id);
+
+        $user->name = $request->name;
+        $user->email = $request->email;
+
+        if ($request->password) {
+            $user->password = Hash::make($request->password);
+        }
+
+        $user->save();
+
+        return redirect()->route('users.index')->with('success', 'Usuario actualizado correctamente.');
     }
 }
