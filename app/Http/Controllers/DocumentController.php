@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Document;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\Validator;
@@ -35,7 +36,7 @@ class DocumentController extends Controller
             'originDependency' => 'required|string',
             'typeDocument' => 'required|string',
             'name' => 'required|string',
-            'documentNumber'=> 'required|string',
+            'documentNumber' => 'required|string',
             'retentionTime' => 'required|integer',
             'dateElaboration' => 'required|date',
             'totalInventory' => 'required|string',
@@ -71,20 +72,25 @@ class DocumentController extends Controller
     {
         $documents = Document::latest()->get();
 
-        return response() ->json($documents, 200);
-
+        return response()->json($documents, 200);
     }
 
     /**
      * Update the specified resource in storage.
      */
     public function update(Request $request, $id)
+
     {
+
+        if (!$request->user()->can('editDocuments', Document::class)) {
+            return response()->json(['error' => 'No tienes permiso para actualizar documentos'], 403);
+        }
+
         $validator = Validator::make($request->all(), [
             'originDependency' => 'required|string',
             'typeDocument' => 'required|string',
             'name' => 'required|string',
-            'documentNumber'=> 'required|string',
+            'documentNumber' => 'required|string',
             'retentionTime' => 'required|integer',
             'dateElaboration' => 'required|date',
             'totalInventory' => 'required|string',

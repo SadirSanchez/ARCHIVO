@@ -12,6 +12,9 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules;
 use Inertia\Inertia;
 use Inertia\Response;
+use Spatie\Permission\Models\Role;
+use Spatie\Permission\Models\Permission;
+use Illuminate\Support\Facades\Auth;
 
 class RegisteredUserController extends Controller
 {
@@ -32,8 +35,9 @@ class RegisteredUserController extends Controller
     {
         $request->validate([
             'name' => 'required|string|max:255',
-            'email' => 'required|string|lowercase|email|max:255|unique:'.User::class,
+            'email' => 'required|string|lowercase|email|max:255|unique:' . User::class,
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
+            'role' => 'required|in:Admin,User', // Validar el rol
         ]);
 
         $user = User::create([
@@ -41,6 +45,8 @@ class RegisteredUserController extends Controller
             'email' => $request->email,
             'password' => Hash::make($request->password),
         ]);
+
+        $user->assignRole($request->role);
 
         // Disparar el evento de registro (opcional)
         event(new Registered($user));
@@ -69,12 +75,17 @@ class RegisteredUserController extends Controller
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users,email,' . $id,
             'password' => ['nullable', 'confirmed', Rules\Password::defaults()],
+            'role' => 'required|in:Admin,User', // Validar el rol
         ]);
 
         $user = User::findOrFail($id);
 
         $user->name = $request->name;
         $user->email = $request->email;
+
+        if ($request->role) {
+            $user->syncRoles([$request->role]);
+        }
 
         if ($request->password) {
             $user->password = Hash::make($request->password);
