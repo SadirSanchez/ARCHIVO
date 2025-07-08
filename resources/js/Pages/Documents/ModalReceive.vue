@@ -281,8 +281,7 @@ const updateDocument = async () => {
         })
         .catch((err) => {
             err.value = err.response.data;
-            console.log("Error al actulizar documento:", err);
-            alert("Hubo un error al actulizar el documento");
+            alert("Hubo un error al actualizar el documento");
         });
 };
 
